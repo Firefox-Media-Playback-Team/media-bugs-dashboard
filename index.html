@@ -1,0 +1,59 @@
+<html>
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+  <script src="js/bugzilla.js"></script>
+</head>
+<body>
+  <div>
+    <canvas id="chart_110" style="width:100%;max-width:600px"></canvas>
+  </div>
+</body>
+<script>
+
+const BAR_COLOERS = [
+    "#b91d47",
+    "#00aba9",
+    "#2b5797",
+    "#e8c3b9",
+    "#1e7145",
+    "#7b3627",
+    "#27767b",
+    "#337b27",
+    "#d347df",
+    "#4756df",
+  ];
+
+async function GetVersionUpdateBugList(version) {
+  let buglist = await GenerateFixedBugListForVersion(version);
+  let data = GetCategoriesDistributionFromBugList(buglist);
+
+  // convert map to arrays
+  let categories = Array.from(data.keys());
+  let bugAmounts = Array.from(data.values());
+
+  console.log(categories);
+  console.log(bugAmounts);
+
+
+  new Chart("chart_110", {
+    type: "pie",
+    data: {
+      labels: categories,
+      datasets: [{
+        backgroundColor: BAR_COLOERS,
+        data: bugAmounts
+      }]
+    },
+    options: {
+      title: {
+        display: true,
+        text: `Firefox ${version} Fixed Bugs Overview`
+      }
+    }
+  });
+}
+
+GetVersionUpdateBugList("110");
+
+</script>
+</html>
