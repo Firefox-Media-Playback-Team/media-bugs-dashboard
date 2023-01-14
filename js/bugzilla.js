@@ -1,10 +1,17 @@
 const BUGZILLA_REST_URL = "https://bugzilla.mozilla.org/rest/bug";
 const FIXED_BUGS_REQUEST = "?v2=verified&o1=equals&query_format=advanced&f1=cf_status_firefox${VERSION}&component=Audio%2FVideo&component=Audio%2FVideo%3A%20cubeb&component=Audio%2FVideo%3A%20GMP&component=Audio%2FVideo%3A%20Playback&resolution=FIXED&j_top=OR&f2=cf_status_firefox${VERSION}&v1=fixed&o2=equals&product=Core"
 
-var DEBUG = false;
+var DEBUG = true;
+var VERVOSE = false;
 
 function LOG(message) {
   if (DEBUG) {
+    console.log(message);
+  }
+}
+
+function LOGV(message) {
+  if (DEBUG && VERVOSE) {
     console.log(message);
   }
 }
@@ -26,10 +33,18 @@ function GetFixedBugsURLForVersion(version) {
 
 async function GenerateFixedBugListForVersion(version) {
   // TODO : verify version
-  const response = await fetch(GetFixedBugsURLForVersion("110"));
-  const buglist = await response.json();
-  buglist.bugs.sort((a,b) => a.cf_last_resolved > b.cf_last_resolved);
-  console.log(buglist);
+  let buglist;
+  if (sessionStorage.getItem(version)) {
+    buglist = JSON.parse(sessionStorage.getItem(version));
+    LOG(`Generate buglist for ${version} from session storage`);
+  } else {
+    const response = await fetch(GetFixedBugsURLForVersion(version));
+    buglist = await response.json();
+    buglist.bugs.sort((a,b) => a.cf_last_resolved > b.cf_last_resolved);
+    sessionStorage.setItem(version, JSON.stringify(buglist));
+    LOG(`Generate buglist for ${version} from fetching`);
+  }
+  LOGV(buglist);
   return buglist;
 }
 
@@ -38,7 +53,7 @@ function isBugBelongToCategory(bug, category) {
     let isMatched = true;
     for (let keyword of category.keywords) {
       if (!bug.summary.toLowerCase().includes(keyword.toLowerCase())) {
-        LOG(`${bug.summary} doesn't include ${keyword}`);
+        LOGV(`${bug.summary} doesn't include ${keyword}`);
         isMatched = false;
         break;
       }
@@ -60,16 +75,13 @@ function GetCategoryForBug(bug) {
 function GetCategoriesDistributionFromBugList(buglist) {
   let map = new Map();
   buglist.bugs.forEach(bug => {
-    console.log(bug.summary);
     const category = GetCategoryForBug(bug);
-    console.log(category);
     if (map.has(category)) {
       map.set(category, map.get(category) + 1);
     } else {
       map.set(category, 1);
     }
   });
-  console.log(map);
   return map;
 }
 
