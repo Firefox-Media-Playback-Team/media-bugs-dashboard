@@ -25,9 +25,12 @@ function GetCanvasForVersion(version) {
   let canvas = document.createElement('canvas');
   canvas.id = `chart_${version}`;
   canvas.style = "width:100%;max-width:600px";
+  let title = document.createElement('h2');
+  title.innerHTML = `Firefox ${version} Fixed Bugs Overview`;
   let link = document.createElement("a");
   link.innerHTML = "buglist";
   link.href = GetBugListLinkForVersion(version);
+  div.appendChild(title);
   div.appendChild(link);
   div.appendChild(canvas);
   document.body.appendChild(div);
@@ -53,7 +56,6 @@ async function GetPieChartForFixedBugsFromVersion(version) {
     },
     options: {
       title: {
-        display: true,
         text: `Firefox ${version} Fixed Bugs Overview`
       }
     }
