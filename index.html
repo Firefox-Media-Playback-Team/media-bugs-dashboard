@@ -4,9 +4,6 @@
   <script src="js/bugzilla.js"></script>
 </head>
 <body>
-  <div>
-    <canvas id="chart_110" style="width:100%;max-width:600px"></canvas>
-  </div>
 </body>
 <script>
 
@@ -23,7 +20,21 @@ const BAR_COLOERS = [
     "#4756df",
   ];
 
-async function GetVersionUpdateBugList(version) {
+function GetCanvasForVersion(version) {
+  let div = document.createElement("div");
+  let canvas = document.createElement('canvas');
+  canvas.id = `chart_${version}`;
+  canvas.style = "width:100%;max-width:600px";
+  let link = document.createElement("a");
+  link.innerHTML = "buglist";
+  link.href = GetBugListLinkForVersion(version);
+  div.appendChild(link);
+  div.appendChild(canvas);
+  document.body.appendChild(div);
+  return canvas;
+}
+
+async function GetPieChartForFixedBugsFromVersion(version) {
   let buglist = await GenerateFixedBugListForVersion(version);
   let data = GetCategoriesDistributionFromBugList(buglist);
 
@@ -31,11 +42,7 @@ async function GetVersionUpdateBugList(version) {
   let categories = Array.from(data.keys());
   let bugAmounts = Array.from(data.values());
 
-  console.log(categories);
-  console.log(bugAmounts);
-
-
-  new Chart("chart_110", {
+  new Chart(GetCanvasForVersion(version), {
     type: "pie",
     data: {
       labels: categories,
@@ -53,7 +60,13 @@ async function GetVersionUpdateBugList(version) {
   });
 }
 
-GetVersionUpdateBugList("110");
+(async _ => {
+  const latestVersion = 110;
+  const displayVersionAmount = 5;
+  for (let ver = latestVersion; ver > latestVersion - displayVersionAmount; ver--) {
+    GetPieChartForFixedBugsFromVersion(ver);
+  }
+})();
 
 </script>
 </html>
