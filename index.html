@@ -56,19 +56,6 @@ function createFixedBugListVisualRoot() {
 }
 
 async function createPieChart(canvas, version) {
-const BAR_COLOERS = [
-    "#b91d47",
-    "#00aba9",
-    "#2b5797",
-    "#e8c3b9",
-    "#1e7145",
-    "#7b3627",
-    "#27767b",
-    "#337b27",
-    "#d347df",
-    "#4756df",
-  ];
-
   let buglist = await GenerateFixedBugListForVersion(version);
   let data = GetCategoriesDistributionFromBugList(buglist);
 
@@ -80,12 +67,26 @@ const BAR_COLOERS = [
     return labelNums > 7 ? 10 : 20;
   }
 
+  function getColorArray(labelNums) {
+    if (this.arr == undefined) {
+      this.arr = [];
+    }
+    if (this.arr.length >= labelNums) {
+      return arr;
+    }
+    let currentSz = this.arr.length;
+    for (let idx = 0; idx < labelNums - currentSz; idx++) {
+      this.arr.push("#" + Math.floor(Math.random()*16777215).toString(16));
+    }
+    return arr;
+  }
+
   new Chart(canvas, {
     type: "pie",
     data: {
       labels: categories,
       datasets: [{
-        backgroundColor: BAR_COLOERS,
+        backgroundColor: getColorArray(categories.length),
         data: bugAmounts
       }]
     },
@@ -107,7 +108,7 @@ const BAR_COLOERS = [
   const latestVersion = 110;
   const displayVersionAmount = 5;
   for (let ver = latestVersion; ver > latestVersion - displayVersionAmount; ver--) {
-    GetPieChartForFixedBugsFromVersion(ver);
+    await GetPieChartForFixedBugsFromVersion(ver);
   }
 })();
 
