@@ -20,12 +20,7 @@ function LOGV(message) {
 const CATERGORIES = [
   { name: "Wpt", keywords : ["wpt-sync"]},
   { name: "Media engine", blockers : [1752052,  1781735 ], keywords : ["wmfme"]},
-  { name: "Cubeb update", compoment: "Audio/Video: cubeb", keywords : ["update", "cubeb"]},
-  { name: "Opus update", keywords : ["update", "opus"],},
-  { name: "Interminttent", keywords : ["intermittent"]},
-  { name: "Crashes", keywords : ["crash"]},
   { name: "Web codec API", blockers : [1774300], keywords : ["VideoFrame"]},
-  { name: "Libdvaid update", keywords : ["update", "dav1d"]},
   { name: "Android playback", keywords : ["android"]},
   { name: "GMP", component: "Audio/Video: GMP", keywords : ["gmp"]},
   { name: "Seamless looping", blockers : [1262276], keywords : ["seamless"]},
@@ -34,6 +29,15 @@ const CATERGORIES = [
   { name: "Wakelock", blockers : [1665980]},
   { name: "AudioIPC", keywords : ["AudioIPC"]},
   { name: "VAAPI", keywords : ["VAAPI"]},
+  { name: "Utility audio", blockers : [1760797], keywords : ["utility"]},
+  // Lib update
+  { name: "Cubeb update", compoment: "Audio/Video: cubeb", keywords : ["cubeb"]},
+  { name: "Opus update", keywords : ["update", "opus"],},
+  { name: "Libdvaid update", keywords : ["update", "dav1d"]},
+  // Low priority
+  { name: "Interminttent", keywords : ["intermittent"]},
+  { name: "Perma test fail", keywords : ["perma"] },
+  { name: "Crashes", keywords : ["crash"]},
   { name : "Others"},
 ];
 
@@ -67,6 +71,7 @@ function isBugBelongToCategory(bug, category) {
     LOGV(`'${bug.summary}' matches '${category.name}' due to component match`);
     return true;
   }
+
   // By blockers
   if ((bug.depends_on || bug.blocks) && category.blockers) {
     for (let blocker of category.blockers) {
@@ -92,7 +97,6 @@ function isBugBelongToCategory(bug, category) {
     return isMatched;
   }
 
-  LOGV(`'${bug.summary}' doesn't find any match`);
   return false;
 }
 
@@ -102,6 +106,7 @@ function getCategoryForBug(bug) {
       return category.name;
     }
   }
+  LOGV(`'${bug.summary}' doesn't find any match`);
   return CATERGORIES[CATERGORIES.length - 1].name;
 }
 
@@ -118,9 +123,3 @@ function getCategoriesDistributionFromBugList(buglist) {
   // return map in descending order in value (bug amount)
   return new Map([...map.entries()].sort((a, b) => b[1] - a[1]));
 }
-
-(async _ =>{
-  let buglist = await generateFixedBugListForVersion("110");
-  getCategoriesDistributionFromBugList(buglist);
-})();
-
