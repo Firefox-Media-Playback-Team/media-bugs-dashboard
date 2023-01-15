@@ -25,6 +25,9 @@ const CATERGORIES = [
   { name: "Interminttent test failures", keywords : ["intermittent"]},
   { name: "Crashes", keywords : ["crash"]},
   { name: "Web codec API", keywords : ["VideoFrame"]},
+  { name: "Libdvaid update", keywords : ["update", "libdav1d"]},
+  { name: "Android playback", keywords : ["android"]},
+  { name: "GMP", keywords : ["gmp"]},
   { name : "Others"},
 ];
 
