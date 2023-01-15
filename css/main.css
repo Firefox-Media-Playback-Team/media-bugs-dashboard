@@ -27,13 +27,16 @@ body {
   margin-top: 3vmin;
 }
 
+.dashboard-page {
+  background:#141414;
+  box-shadow: 2px 2px 2px #227C70, 6px 6px 30px #141414;
+  border-radius:14px;
+  padding:6px 0px;
+}
+
 .version-fixed-bugs {
   width: 50%;
   height: 50%;
-  border-radius:10px;
-  border:2px solid #666;
-  padding:6px 0px;
-  background:#141414;
 }
 
 .horizontal-scroll-bar {
@@ -76,6 +79,10 @@ body {
   /* background: yellow; */
   color: white;
   text-align: center;
+}
+
+.footer {
+  height: 20px;
 }
 
 /* .arrow {
