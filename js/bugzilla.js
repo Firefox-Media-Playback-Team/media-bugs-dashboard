@@ -18,11 +18,11 @@ function LOGV(message) {
 }
 
 const CATERGORIES = [
-  { name: "Web platform test sync", keywords : ["wpt-sync"]},
-  { name: "WMF media engine", blockers : [1752052,  1781735 ], keywords : ["wmfme"]},
+  { name: "Wpt", keywords : ["wpt-sync"]},
+  { name: "Media engine", blockers : [1752052,  1781735 ], keywords : ["wmfme"]},
   { name: "Cubeb update", compoment: "Audio/Video: cubeb", keywords : ["update", "cubeb"]},
   { name: "Opus update", keywords : ["update", "opus"],},
-  { name: "Interminttent test failures", keywords : ["intermittent"]},
+  { name: "Interminttent", keywords : ["intermittent"]},
   { name: "Crashes", keywords : ["crash"]},
   { name: "Web codec API", blockers : [1774300], keywords : ["VideoFrame"]},
   { name: "Libdvaid update", keywords : ["update", "dav1d"]},
