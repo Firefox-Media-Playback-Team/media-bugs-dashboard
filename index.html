@@ -86,8 +86,14 @@ const BAR_COLOERS = [
       }]
     },
     options: {
-      title: {
-        text: `Firefox ${version} Fixed Bugs Overview`
+      legend: {
+        // https://www.chartjs.org/docs/latest/configuration/legend.html#legend-label-configuration
+        labels: {
+          boxWidth:20,
+          // generateLabels: function(chart) {
+          //   return "";
+          // }
+        }
       }
     }
   });
