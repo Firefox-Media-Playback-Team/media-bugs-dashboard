@@ -33,6 +33,7 @@ body {
   box-shadow: 2px 2px 2px #227C70, 6px 6px 30px #141414;
   border-radius:14px;
   padding:6px 0px;
+  font-family: 'Poppins';
 }
 
 .version-fixed-bugs {
@@ -75,6 +76,7 @@ body {
 .fixed-bug-list .title {
   color: white;
   text-align: center;
+  font-weight: 100;
 }
 
 .fixed-bug-list .description {
