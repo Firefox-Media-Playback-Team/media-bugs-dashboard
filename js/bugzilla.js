@@ -33,6 +33,7 @@ const CATERGORIES = [
   { name: "Webvtt", blockers : [629350]},
   { name: "Wakelock", blockers : [1665980]},
   { name: "AudioIPC", keywords : ["AudioIPC"]},
+  { name: "VAAPI", keywords : ["VAAPI"]},
   { name : "Others"},
 ];
 
