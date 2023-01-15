@@ -76,6 +76,10 @@ const BAR_COLOERS = [
   let categories = Array.from(data.keys());
   let bugAmounts = Array.from(data.values());
 
+  function getLabelWidth(labelNums) {
+    return labelNums > 7 ? 10 : 20;
+  }
+
   new Chart(canvas, {
     type: "pie",
     data: {
@@ -89,7 +93,7 @@ const BAR_COLOERS = [
       legend: {
         // https://www.chartjs.org/docs/latest/configuration/legend.html#legend-label-configuration
         labels: {
-          boxWidth:20,
+          boxWidth: getLabelWidth(categories.length),
           // generateLabels: function(chart) {
           //   return "";
           // }

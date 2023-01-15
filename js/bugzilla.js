@@ -109,7 +109,8 @@ function GetCategoriesDistributionFromBugList(buglist) {
       map.set(category, 1);
     }
   });
-  return map;
+  // return map in descending order in value (bug amount)
+  return new Map([...map.entries()].sort((a, b) => b[1] - a[1]));
 }
 
 (async _ =>{
