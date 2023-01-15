@@ -20,14 +20,14 @@ function LOGV(message) {
 const CATERGORIES = [
   { name: "Web platform test sync", keywords : ["wpt-sync"]},
   { name: "WMF media engine", blockers : [1752052,  1781735 ], keywords : ["wmfme"]},
-  { name: "Cubeb update", keywords : ["update", "cubeb"]},
+  { name: "Cubeb update", compoment: "Audio/Video: cubeb", keywords : ["update", "cubeb"]},
   { name: "Opus update", keywords : ["update", "opus"],},
   { name: "Interminttent test failures", keywords : ["intermittent"]},
   { name: "Crashes", keywords : ["crash"]},
   { name: "Web codec API", blockers : [1774300], keywords : ["VideoFrame"]},
   { name: "Libdvaid update", keywords : ["update", "dav1d"]},
   { name: "Android playback", keywords : ["android"]},
-  { name: "GMP", keywords : ["gmp"]},
+  { name: "GMP", component: "Audio/Video: GMP", keywords : ["gmp"]},
   { name: "Seamless looping", blockers : [1262276], keywords : ["seamless"]},
   { name: "Block autoplay", blockers : [1376321]},
   { name: "Webvtt", blockers : [629350]},
@@ -61,6 +61,11 @@ async function GenerateFixedBugListForVersion(version) {
 }
 
 function isBugBelongToCategory(bug, category) {
+  // By component
+  if (category.component && bug.component === category.component) {
+    LOGV(`'${bug.summary}' matches '${category.name}' due to component match`);
+    return true;
+  }
   // By blockers
   if ((bug.depends_on || bug.blocks) && category.blockers) {
     for (let blocker of category.blockers) {
