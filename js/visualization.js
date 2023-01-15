@@ -5,8 +5,48 @@ function getCanvasForVersion(version) {
   return canvas;
 }
 
+function createRootElementFrom(query, rootClassName) {
+  let root = document.createElement("div");
+  if (rootClassName) {
+    root.className = rootClassName;
+  }
+  document.querySelector(query).appendChild(root);
+  return root;
+}
+
+/**
+ * Priority Section
+ */
+ async function createPrioritySection() {
+  let title = document.createElement('h2');
+  title.innerHTML = `Open Bugs Overview`;
+  document.querySelector(".priority-overview>.title").appendChild(title);
+  createProrityBugReportSection("P1");
+  createProrityBugReportSection("P2");
+  createProrityBugReportSection("P3");
+  createProrityBugReportSection("P4");
+  createProrityBugReportSection("P5");
+}
+
+async function createProrityBugReportSection(priority) {
+  const root = createRootElementFrom(
+      ".priority-overview>.data-section", "priority-section");
+  let priorityTitle = document.createElement('h2');
+  priorityTitle.innerHTML = priority;
+  root.appendChild(priorityTitle);
+
+  let bugAmount = document.createElement('a');
+  bugAmount.innerHTML = await getBugCountForPriority(priority);
+  bugAmount.href = getBugListLinkForPriority(priority);
+  root.appendChild(bugAmount);
+}
+
+/**
+ * Version Section
+ */
 async function getPieChartForFixedBugsFromVersion(version) {
-  const root = createFixedBugListVisualRoot();
+  const root = createRootElementFrom(
+      ".chart-data > .horizontal-scroll-bar", "fixed-bug-list");
 
   let titleDiv = document.createElement("div");
   let title = document.createElement('h2');
@@ -27,13 +67,6 @@ async function getPieChartForFixedBugsFromVersion(version) {
   root.appendChild(canvas);
 
   await createPieChart(canvas, version);
-}
-
-function createFixedBugListVisualRoot() {
-  let root = document.createElement("div");
-  root.className = "fixed-bug-list";
-  document.querySelector(".chart-data > .horizontal-scroll-bar").appendChild(root);
-  return root;
 }
 
 async function createPieChart(canvas, version) {

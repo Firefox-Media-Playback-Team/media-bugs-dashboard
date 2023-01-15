@@ -9,8 +9,8 @@ body {
   border-radius:20px;
 }
 
+/* header */
 .header {
-  margin: 0px;
   height:15vh;
   text-align: center;
   border-radius:10px;
@@ -28,14 +28,47 @@ body {
   margin-top: 3vmin;
 }
 
+/* dashboard basic units */
+/* .dashboard .row {
+  margin-left: 5px;
+  margin-right: 5px;
+  background: blue;
+} */
+
 .dashboard-page {
   background:#141414;
   box-shadow: 2px 2px 2px #227C70, 6px 6px 30px #141414;
   border-radius:14px;
-  padding:6px 0px;
   font-family: 'Poppins';
 }
 
+.dashboard-page .title {
+  color: white;
+  text-align: center;
+  font-weight: 100;
+}
+
+
+.dashboard-page h2 {
+  color: white;
+}
+
+/* priority section */
+.priority-overview {
+  height: 20%;
+  margin: 10px 10px 10px 5px;
+  text-align: center;
+}
+
+.priority-overview .priority-section {
+  /* background-color: aqua; */
+  height: 50%;
+  width: 15%;
+  margin-left: 10px;
+  display: inline-block;
+}
+
+/* version fixed bug section */
 .version-fixed-bugs {
   margin-left: 10px;
   width: 50%;
@@ -65,18 +98,11 @@ body {
 
 .fixed-bug-list {
   aspect-ratio: 2/1;
-  /* background: red; */
   width: 100%;
   height: 100%;
   display: inline-block;
   scroll-snap-align: center;
   margin: 5px;
-}
-
-.fixed-bug-list .title {
-  color: white;
-  text-align: center;
-  font-weight: 100;
 }
 
 .fixed-bug-list .description {

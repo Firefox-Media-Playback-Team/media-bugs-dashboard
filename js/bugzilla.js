@@ -1,6 +1,7 @@
 const BUGZILLA_REST_URL = "https://bugzilla.mozilla.org/rest/bug";
 const BUGZILLA_BUTLIST_URL = "https://bugzilla.mozilla.org/buglist.cgi";
 const FIXED_BUGS_REQUEST = "?v2=verified&o1=equals&query_format=advanced&f1=cf_status_firefox${VERSION}&component=Audio%2FVideo&component=Audio%2FVideo%3A%20cubeb&component=Audio%2FVideo%3A%20GMP&component=Audio%2FVideo%3A%20Playback&resolution=FIXED&j_top=OR&f2=cf_status_firefox${VERSION}&v1=fixed&o2=equals&product=Core"
+const PRIORITY_BUGS_REQUEST = "?resolution=---&component=Audio%2FVideo&component=Audio%2FVideo%3A%20cubeb&component=Audio%2FVideo%3A%20GMP&component=Audio%2FVideo%3A%20Playback&priority=${PRIORITY}";
 
 var DEBUG = true;
 var VERVOSE = false;
@@ -45,10 +46,23 @@ function getBugListLinkForVersion(version) {
   return BUGZILLA_BUTLIST_URL + FIXED_BUGS_REQUEST.replaceAll("${VERSION}", version);
 }
 
+function getBugListLinkForPriority(priority) {
+  return BUGZILLA_BUTLIST_URL + PRIORITY_BUGS_REQUEST.replaceAll("${PRIORITY}", priority);
+}
+
 function getBugListRestfulForVersion(version) {
   return BUGZILLA_REST_URL + FIXED_BUGS_REQUEST.replaceAll("${VERSION}", version);
 }
 
+function getBugListRestfulForPriority(priority, countOnly = false) {
+  return BUGZILLA_REST_URL +
+         PRIORITY_BUGS_REQUEST.replaceAll("${PRIORITY}", priority) +
+        (countOnly ? "&count_only=1":"");
+}
+
+/**
+ * For version
+ */
 async function generateFixedBugListForVersion(version) {
   // TODO : verify version
   let buglist;
@@ -66,6 +80,36 @@ async function generateFixedBugListForVersion(version) {
   return buglist;
 }
 
+/**
+ * Priority Section
+ */
+ async function getBugListForPriority(priority) {
+  // TODO : verify priority
+  let buglist;
+  if (sessionStorage.getItem(priority)) {
+    buglist = JSON.parse(sessionStorage.getItem(priority));
+    LOG(`Generate buglist for ${priority} from session storage`);
+  } else {
+    const response = await fetch(getBugListRestfulForPriority(priority));
+    buglist = await response.json();
+    sessionStorage.setItem(priority, JSON.stringify(buglist.bugs));
+    LOG(`Generate buglist for ${priority} from fetching`);
+    buglist = buglist.bugs;
+  }
+  return buglist;
+}
+
+async function getBugCountForPriority(priority) {
+  // TODO : verify priority
+  const response = await fetch(
+      getBugListRestfulForPriority(priority, true /* countOnly */));
+  let rv = await response.json();
+  return rv.bug_count;
+}
+
+/**
+ * Catergory rule
+ */
 function isBugBelongToCategory(bug, category) {
   // By component
   if (category.component && bug.component === category.component) {

@@ -14,6 +14,10 @@
     <img id="title-img" src="resources/firefox.png" height="90%"/>
     <div id="title">Media Bug Dashboard</div>
   </div>
+  <div class="priority-overview dashboard-page">
+    <div class="title"></div>
+    <div class="data-section"></div>
+  </div>
   <div class="version-fixed-bugs dashboard-page">
     <div id="main" class="chart-data">
       <div class="horizontal-scroll-bar"></div>
@@ -28,6 +32,8 @@
 <script>
 
 (async _ => {
+  createPrioritySection();
+
   const latestVersion = 110;
   const displayVersionAmount = 5;
   for (let ver = latestVersion; ver > latestVersion - displayVersionAmount; ver--) {
