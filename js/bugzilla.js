@@ -59,8 +59,9 @@ async function generateFixedBugListForVersion(version) {
     const response = await fetch(getBugListRestfulForVersion(version));
     buglist = await response.json();
     buglist.bugs.sort((a,b) => a.cf_last_resolved > b.cf_last_resolved);
-    sessionStorage.setItem(version, JSON.stringify(buglist));
+    sessionStorage.setItem(version, JSON.stringify(buglist.bugs));
     LOG(`Generate buglist for ${version} from fetching`);
+    buglist = buglist.bugs;
   }
   return buglist;
 }
@@ -112,7 +113,7 @@ function getCategoryForBug(bug) {
 
 function getCategoriesDistributionFromBugList(buglist) {
   let map = new Map();
-  buglist.bugs.forEach(bug => {
+  buglist.forEach(bug => {
     const category = getCategoryForBug(bug);
     if (map.has(category)) {
       map.set(category, map.get(category) + 1);
