@@ -1,3 +1,32 @@
+body {
+  background: #1f423e;
+}
+
+.dashboard {
+  border-radius:10px;
+  background: #141414;
+  padding:6px 6px;
+}
+
+.header {
+  margin: 0px;
+  height:15vh;
+  text-align: center;
+  border-radius:10px;
+  padding:6px 0px;
+  font-family: 'Poppins';
+  font-style: normal;
+  font-size:  6vmin;
+  color: #FFFFFF;
+}
+
+.header div {
+  display: inline-block;
+  height: 100%;
+  vertical-align: top;
+  margin-top: 3vmin;
+}
+
 .version-fixed-bugs {
   width: 50%;
   height: 50%;
