@@ -24,10 +24,11 @@ const CATERGORIES = [
   { name: "Opus update", keywords : ["update", "opus"],},
   { name: "Interminttent test failures", keywords : ["intermittent"]},
   { name: "Crashes", keywords : ["crash"]},
-  { name: "Web codec API", keywords : ["VideoFrame"]},
+  { name: "Web codec API", blockers : [1774300], keywords : ["VideoFrame"]},
   { name: "Libdvaid update", keywords : ["update", "libdav1d"]},
   { name: "Android playback", keywords : ["android"]},
   { name: "GMP", keywords : ["gmp"]},
+  { name: "Seamless looping", blockers : [1262276], keywords : ["seamless"]},
   { name : "Others"},
 ];
 
@@ -52,22 +53,36 @@ async function GenerateFixedBugListForVersion(version) {
     sessionStorage.setItem(version, JSON.stringify(buglist));
     LOG(`Generate buglist for ${version} from fetching`);
   }
-  LOGV(buglist);
   return buglist;
 }
 
 function isBugBelongToCategory(bug, category) {
+  // By blockers
+  if (bug.depends_on && category.blockers) {
+    for (let blocker of category.blockers) {
+      if (bug.depends_on.includes(blocker)) {
+        LOGV(`'${bug.summary}' matches '${category.name}' due to blocker match`);
+        return true;
+      }
+    }
+  }
+
+  // By keywords
   if (category.keywords) {
     let isMatched = true;
     for (let keyword of category.keywords) {
       if (!bug.summary.toLowerCase().includes(keyword.toLowerCase())) {
-        LOGV(`${bug.summary} doesn't include ${keyword}`);
         isMatched = false;
         break;
       }
     }
+    if (isMatched) {
+      LOGV(`'${bug.summary}' matches '${category.name}' due to keyword match`);
+    }
     return isMatched;
   }
+
+  LOGV(`'${bug.summary}' doesn't find any match`);
   return false;
 }
 
