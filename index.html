@@ -1,12 +1,61 @@
 <html>
 <head>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+  <link rel="stylesheet" type="text/css" href="css/main.css" />
   <script src="js/bugzilla.js"></script>
 </head>
 <body>
+
+<div class="version-fixed-bugs">
+  <div id="main" class="chart-data">
+    <div class="horizontal-scroll-bar"></div>
+  </div>
+  <!-- <div>
+    <i class="arrow right"></i>
+  </div> -->
+</div>
 </body>
 <script>
 
+function GetCanvasForVersion(version) {
+  let canvas = document.createElement('canvas');
+  canvas.id = `chart_${version}`;
+  canvas.style = "width:100%;height:75%;";
+  return canvas;
+}
+
+async function GetPieChartForFixedBugsFromVersion(version) {
+  const root = createFixedBugListVisualRoot();
+
+  let titleDiv = document.createElement("div");
+  let title = document.createElement('h2');
+  title.innerHTML = `Firefox ${version} Fixed Bugs Overview`;
+  titleDiv.className = "title";
+  titleDiv.appendChild(title);
+  root.appendChild(titleDiv);
+
+  let desDiv = document.createElement("div");
+  let buglistLink = document.createElement("a");
+  buglistLink.innerHTML = "buglist";
+  buglistLink.href = GetBugListLinkForVersion(version);
+  desDiv.appendChild(buglistLink);
+  desDiv.className = "description"
+  root.appendChild(desDiv);
+
+  let canvas = GetCanvasForVersion(version);
+  root.appendChild(canvas);
+
+  await createPieChart(canvas, version);
+}
+
+function createFixedBugListVisualRoot() {
+  let root = document.createElement("div");
+  root.className = "fixed-bug-list";
+  document.querySelector(".chart-data > .horizontal-scroll-bar").appendChild(root);
+  return root;
+}
+
+async function createPieChart(canvas, version) {
 const BAR_COLOERS = [
     "#b91d47",
     "#00aba9",
@@ -20,24 +69,6 @@ const BAR_COLOERS = [
     "#4756df",
   ];
 
-function GetCanvasForVersion(version) {
-  let div = document.createElement("div");
-  let canvas = document.createElement('canvas');
-  canvas.id = `chart_${version}`;
-  canvas.style = "width:100%;max-width:600px";
-  let title = document.createElement('h2');
-  title.innerHTML = `Firefox ${version} Fixed Bugs Overview`;
-  let link = document.createElement("a");
-  link.innerHTML = "buglist";
-  link.href = GetBugListLinkForVersion(version);
-  div.appendChild(title);
-  div.appendChild(link);
-  div.appendChild(canvas);
-  document.body.appendChild(div);
-  return canvas;
-}
-
-async function GetPieChartForFixedBugsFromVersion(version) {
   let buglist = await GenerateFixedBugListForVersion(version);
   let data = GetCategoriesDistributionFromBugList(buglist);
 
@@ -45,7 +76,7 @@ async function GetPieChartForFixedBugsFromVersion(version) {
   let categories = Array.from(data.keys());
   let bugAmounts = Array.from(data.values());
 
-  new Chart(GetCanvasForVersion(version), {
+  new Chart(canvas, {
     type: "pie",
     data: {
       labels: categories,

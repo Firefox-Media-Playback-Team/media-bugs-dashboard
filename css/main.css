@@ -1,0 +1,63 @@
+.version-fixed-bugs {
+  width: 50%;
+  height: 50%;
+  border-radius:10px;
+  border:2px solid #666;
+  padding:6px 0px;
+  background:#141414;
+}
+
+.horizontal-scroll-bar {
+  width: 100%;
+  height: 100%;
+  border-radius:8px;
+
+  display: flex;
+  scroll-snap-type: x mandatory;
+  white-space: nowrap;
+
+  overflow-x: scroll;
+  overflow-y: hidden;
+
+  /* Hide scrollbar for Firefox */
+  /* scrollbar-width: none; */
+}
+
+.horizontal-scroll-bar::-webkit-scrollbar {
+  /* Hide scrollbar for Chromium and Safari */
+  /* display: none; */
+}
+
+.fixed-bug-list {
+  aspect-ratio: 2/1;
+  /* background: red; */
+  width: 100%;
+  height: 100%;
+  display: inline-block;
+  scroll-snap-align: center;
+  margin: 5px;
+}
+
+.fixed-bug-list .title {
+  color: white;
+  text-align: center;
+}
+
+.fixed-bug-list .description {
+  /* background: yellow; */
+  color: white;
+  text-align: center;
+}
+
+/* .arrow {
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+  bottom: 20px;
+}
+
+.right {
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+} */
