@@ -17,14 +17,14 @@
 </body>
 <script>
 
-function GetCanvasForVersion(version) {
+function getCanvasForVersion(version) {
   let canvas = document.createElement('canvas');
   canvas.id = `chart_${version}`;
   canvas.style = "width:100%;height:75%;";
   return canvas;
 }
 
-async function GetPieChartForFixedBugsFromVersion(version) {
+async function getPieChartForFixedBugsFromVersion(version) {
   const root = createFixedBugListVisualRoot();
 
   let titleDiv = document.createElement("div");
@@ -37,12 +37,12 @@ async function GetPieChartForFixedBugsFromVersion(version) {
   let desDiv = document.createElement("div");
   let buglistLink = document.createElement("a");
   buglistLink.innerHTML = "buglist";
-  buglistLink.href = GetBugListLinkForVersion(version);
+  buglistLink.href = getBugListLinkForVersion(version);
   desDiv.appendChild(buglistLink);
   desDiv.className = "description"
   root.appendChild(desDiv);
 
-  let canvas = GetCanvasForVersion(version);
+  let canvas = getCanvasForVersion(version);
   root.appendChild(canvas);
 
   await createPieChart(canvas, version);
@@ -56,8 +56,8 @@ function createFixedBugListVisualRoot() {
 }
 
 async function createPieChart(canvas, version) {
-  let buglist = await GenerateFixedBugListForVersion(version);
-  let data = GetCategoriesDistributionFromBugList(buglist);
+  let buglist = await generateFixedBugListForVersion(version);
+  let data = getCategoriesDistributionFromBugList(buglist);
 
   // convert map to arrays
   let categories = Array.from(data.keys());
@@ -108,7 +108,7 @@ async function createPieChart(canvas, version) {
   const latestVersion = 110;
   const displayVersionAmount = 5;
   for (let ver = latestVersion; ver > latestVersion - displayVersionAmount; ver--) {
-    await GetPieChartForFixedBugsFromVersion(ver);
+    await getPieChartForFixedBugsFromVersion(ver);
   }
 })();
 

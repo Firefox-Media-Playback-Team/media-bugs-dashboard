@@ -37,22 +37,22 @@ const CATERGORIES = [
   { name : "Others"},
 ];
 
-function GetBugListLinkForVersion(version) {
+function getBugListLinkForVersion(version) {
   return BUGZILLA_BUTLIST_URL + FIXED_BUGS_REQUEST.replaceAll("${VERSION}", version);
 }
 
-function GetBugListRestfulForVersion(version) {
+function getBugListRestfulForVersion(version) {
   return BUGZILLA_REST_URL + FIXED_BUGS_REQUEST.replaceAll("${VERSION}", version);
 }
 
-async function GenerateFixedBugListForVersion(version) {
+async function generateFixedBugListForVersion(version) {
   // TODO : verify version
   let buglist;
   if (sessionStorage.getItem(version)) {
     buglist = JSON.parse(sessionStorage.getItem(version));
     LOG(`Generate buglist for ${version} from session storage`);
   } else {
-    const response = await fetch(GetBugListRestfulForVersion(version));
+    const response = await fetch(getBugListRestfulForVersion(version));
     buglist = await response.json();
     buglist.bugs.sort((a,b) => a.cf_last_resolved > b.cf_last_resolved);
     sessionStorage.setItem(version, JSON.stringify(buglist));
@@ -96,7 +96,7 @@ function isBugBelongToCategory(bug, category) {
   return false;
 }
 
-function GetCategoryForBug(bug) {
+function getCategoryForBug(bug) {
   for (let category of CATERGORIES) {
     if (isBugBelongToCategory(bug, category)) {
       return category.name;
@@ -105,10 +105,10 @@ function GetCategoryForBug(bug) {
   return CATERGORIES[CATERGORIES.length - 1].name;
 }
 
-function GetCategoriesDistributionFromBugList(buglist) {
+function getCategoriesDistributionFromBugList(buglist) {
   let map = new Map();
   buglist.bugs.forEach(bug => {
-    const category = GetCategoryForBug(bug);
+    const category = getCategoryForBug(bug);
     if (map.has(category)) {
       map.set(category, map.get(category) + 1);
     } else {
@@ -120,7 +120,7 @@ function GetCategoriesDistributionFromBugList(buglist) {
 }
 
 (async _ =>{
-  let buglist = await GenerateFixedBugListForVersion("110");
-  GetCategoriesDistributionFromBugList(buglist);
+  let buglist = await generateFixedBugListForVersion("110");
+  getCategoriesDistributionFromBugList(buglist);
 })();
 
