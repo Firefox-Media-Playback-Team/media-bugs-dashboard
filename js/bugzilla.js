@@ -60,6 +60,22 @@ function getBugListRestfulForPriority(priority, countOnly = false) {
         (countOnly ? "&count_only=1":"");
 }
 
+function getBugzillaRestfulResponse({request, target, replace, count_only, update_within_months}) {
+  let url = BUGZILLA_REST_URL + request.replaceAll(`${target}`, `${replace}`);
+
+  if (count_only) {
+    url += "&count_only=1";
+  }
+  if (update_within_months) {
+    let date = new Date();
+    date.setMonth(date.getMonth() - update_within_months);
+    let updateSince = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    url += `&chfieldfrom=${updateSince}`;
+  }
+  console.log(url);
+  return url;
+}
+
 /**
  * For version
  */
