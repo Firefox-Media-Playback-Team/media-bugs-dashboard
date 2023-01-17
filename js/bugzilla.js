@@ -1,5 +1,5 @@
 const BUGZILLA_REST_URL = "https://bugzilla.mozilla.org/rest/bug";
-const BUGZILLA_BUTLIST_URL = "https://bugzilla.mozilla.org/buglist.cgi";
+const BUGZILLA_BUGLIST_URL = "https://bugzilla.mozilla.org/buglist.cgi";
 const FIXED_BUGS_REQUEST = "?v2=verified&o1=equals&query_format=advanced&f1=cf_status_firefox${VERSION}&component=Audio%2FVideo&component=Audio%2FVideo%3A%20cubeb&component=Audio%2FVideo%3A%20GMP&component=Audio%2FVideo%3A%20Playback&resolution=FIXED&j_top=OR&f2=cf_status_firefox${VERSION}&v1=fixed&o2=equals&product=Core"
 const PRIORITY_BUGS_REQUEST = "?resolution=---&component=Audio%2FVideo&component=Audio%2FVideo%3A%20cubeb&component=Audio%2FVideo%3A%20GMP&component=Audio%2FVideo%3A%20Playback&priority=${PRIORITY}";
 
@@ -43,11 +43,11 @@ const CATERGORIES = [
 ];
 
 function getBugListLinkForVersion(version) {
-  return BUGZILLA_BUTLIST_URL + FIXED_BUGS_REQUEST.replaceAll("${VERSION}", version);
+  return BUGZILLA_BUGLIST_URL + FIXED_BUGS_REQUEST.replaceAll("${VERSION}", version);
 }
 
 function getBugListLinkForPriority(priority) {
-  return BUGZILLA_BUTLIST_URL + PRIORITY_BUGS_REQUEST.replaceAll("${PRIORITY}", priority);
+  return BUGZILLA_BUGLIST_URL + PRIORITY_BUGS_REQUEST.replaceAll("${PRIORITY}", priority);
 }
 
 function getBugListRestfulForVersion(version) {
@@ -74,6 +74,19 @@ function getBugzillaRestfulUrl({request, target, replace, count_only, update_wit
   }
   return url;
 }
+
+function getBugzillaListUrl({request, target, replace, update_within_months}) {
+  let url = BUGZILLA_BUGLIST_URL + request.replaceAll(`${target}`, `${replace}`);
+  if (update_within_months) {
+    let date = new Date();
+    date.setMonth(date.getMonth() - update_within_months);
+    let updateSince = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    url += `&chfieldfrom=${updateSince}`;
+  }
+  console.log(url);
+  return url;
+}
+
 
 /**
  * For version
@@ -123,7 +136,7 @@ async function getBugCountForPriority(priority) {
 }
 
 async function fecthAndParse(url) {
-  const response = await fetch(url);
+  const response = await fetch(url, { mode: 'cors'});
   let rv = await response.json();
   return rv;
 }

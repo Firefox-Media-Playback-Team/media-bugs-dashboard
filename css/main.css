@@ -48,7 +48,6 @@ body {
   font-weight: 100;
 }
 
-
 .dashboard-page h2 {
   color: white;
 }
@@ -60,13 +59,20 @@ body {
   text-align: center;
 }
 
-.priority-overview .priority-section {
-  /* background-color: aqua; */
+.priority-overview .table {
+  margin-left: auto;
+  margin-right: auto;
+  color: white;
+  text-align: center;
+}
+
+/* .priority-overview .priority-section {
+  background-color: aqua;
   height: 50%;
   width: 15%;
   margin-left: 10px;
   display: inline-block;
-}
+} */
 
 /* version fixed bug section */
 .version-fixed-bugs {

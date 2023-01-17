@@ -29,18 +29,13 @@ function createRootElementFrom(query, rootClassName) {
 }
 
 async function createProrityBugReportSection(priority) {
-  const root = createRootElementFrom(
-      ".priority-overview>.data-section", "priority-section");
-  let priorityTitle = document.createElement('h2');
-  priorityTitle.innerHTML = priority;
-  root.appendChild(priorityTitle);
-
+  // Display total bug amount
   let bugAmount = document.createElement('a');
   bugAmount.innerHTML = await getBugCountForPriority(priority);
   bugAmount.href = getBugListLinkForPriority(priority);
-  root.appendChild(bugAmount);
+  document.getElementById(`${priority}-total`).appendChild(bugAmount);
 
-  // Get bug count for recent updates
+  // Display recent bugs
   let url = getBugzillaRestfulUrl({
     request : PRIORITY_BUGS_REQUEST,
     target : "${PRIORITY}",
@@ -49,7 +44,15 @@ async function createProrityBugReportSection(priority) {
     update_within_months: 1,
   });
   let rv = await fecthAndParse(url);
-  console.log(rv.bug_count);
+  let recentBugs = document.createElement('a');
+  recentBugs.innerHTML = rv.bug_count;
+  recentBugs.href = getBugzillaListUrl({
+    request : PRIORITY_BUGS_REQUEST,
+    target : "${PRIORITY}",
+    replace : priority,
+    update_within_months: 1,
+  });
+  document.getElementById(`${priority}-recent-updated`).appendChild(recentBugs);
 }
 
 /**

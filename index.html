@@ -16,7 +16,36 @@
   </div>
   <div class="priority-overview dashboard-page">
     <div class="title"></div>
-    <div class="data-section"></div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>P1</th>
+          <th>P2</th>
+          <th>P3</th>
+          <th>P4</th>
+          <th>P5</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row" style="width:60%">Total bug amount</th>
+          <td id="P1-total"></td>
+          <td id="P2-total"></td>
+          <td id="P3-total"></td>
+          <td id="P4-total"></td>
+          <td id="P5-total"></td>
+        </tr>
+        <tr>
+          <th scope="row">Updated bugs<br>within a month</th>
+          <td id="P1-recent-updated"></td>
+          <td id="P2-recent-updated"></td>
+          <td id="P3-recent-updated"></td>
+          <td id="P4-recent-updated"></td>
+          <td id="P5-recent-updated"></td>
+        </tr>
+      </tbody>
+    </table>
   </div>
   <div class="version-fixed-bugs dashboard-page">
     <div id="main" class="chart-data">
