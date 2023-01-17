@@ -60,7 +60,7 @@ function getBugListRestfulForPriority(priority, countOnly = false) {
         (countOnly ? "&count_only=1":"");
 }
 
-function getBugzillaRestfulResponse({request, target, replace, count_only, update_within_months}) {
+function getBugzillaRestfulUrl({request, target, replace, count_only, update_within_months}) {
   let url = BUGZILLA_REST_URL + request.replaceAll(`${target}`, `${replace}`);
 
   if (count_only) {
@@ -72,7 +72,6 @@ function getBugzillaRestfulResponse({request, target, replace, count_only, updat
     let updateSince = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
     url += `&chfieldfrom=${updateSince}`;
   }
-  console.log(url);
   return url;
 }
 
@@ -121,6 +120,12 @@ async function getBugCountForPriority(priority) {
       getBugListRestfulForPriority(priority, true /* countOnly */));
   let rv = await response.json();
   return rv.bug_count;
+}
+
+async function fecthAndParse(url) {
+  const response = await fetch(url);
+  let rv = await response.json();
+  return rv;
 }
 
 /**

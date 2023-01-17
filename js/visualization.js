@@ -39,6 +39,17 @@ async function createProrityBugReportSection(priority) {
   bugAmount.innerHTML = await getBugCountForPriority(priority);
   bugAmount.href = getBugListLinkForPriority(priority);
   root.appendChild(bugAmount);
+
+  // Get bug count for recent updates
+  let url = getBugzillaRestfulUrl({
+    request : PRIORITY_BUGS_REQUEST,
+    target : "${PRIORITY}",
+    replace : priority,
+    count_only: true,
+    update_within_months: 1,
+  });
+  let rv = await fecthAndParse(url);
+  console.log(rv.bug_count);
 }
 
 /**
