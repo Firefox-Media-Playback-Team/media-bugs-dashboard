@@ -18,29 +18,7 @@ function LOGV(message) {
   }
 }
 
-const CATERGORIES = [
-  { name: "Wpt", keywords : ["wpt-sync"]},
-  { name: "Media engine", blockers : [1752052,  1781735 ], keywords : ["wmfme"]},
-  { name: "Web codec API", blockers : [1774300], keywords : ["VideoFrame"]},
-  { name: "Android playback", keywords : ["android"]},
-  { name: "GMP", component: "Audio/Video: GMP", keywords : ["gmp"]},
-  { name: "Seamless looping", blockers : [1262276], keywords : ["seamless"]},
-  { name: "Block autoplay", blockers : [1376321]},
-  { name: "Webvtt", blockers : [629350]},
-  { name: "Wakelock", blockers : [1665980]},
-  { name: "AudioIPC", keywords : ["AudioIPC"]},
-  { name: "VAAPI", keywords : ["VAAPI"]},
-  { name: "Utility audio", blockers : [1760797], keywords : ["utility"]},
-  // Lib update
-  { name: "Cubeb update", compoment: "Audio/Video: cubeb", keywords : ["cubeb"]},
-  { name: "Opus update", keywords : ["update", "opus"],},
-  { name: "Libdvaid update", keywords : ["update", "dav1d"]},
-  // Low priority
-  { name: "Interminttent", keywords : ["intermittent"]},
-  { name: "Perma test fail", keywords : ["perma"] },
-  { name: "Crashes", keywords : ["crash"]},
-  { name : "Others"},
-];
+var CATEGORIES;
 
 export function getBugListLinkForVersion(version) {
   return BUGZILLA_BUGLIST_URL + FIXED_BUGS_REQUEST.replaceAll("${VERSION}", version);
@@ -86,7 +64,6 @@ export function getBugzillaListUrl({request, target, replace, update_within_mont
   console.log(url);
   return url;
 }
-
 
 /**
  * For version
@@ -179,26 +156,42 @@ function isBugBelongToCategory(bug, category) {
   return false;
 }
 
-function getCategoryForBug(bug) {
-  for (let category of CATERGORIES) {
+async function getTriagingCategories() {
+  const itemName = "bug_categories";
+  if (CATEGORIES === undefined) {
+    if (sessionStorage.getItem(itemName)) {
+      CATEGORIES = JSON.parse(sessionStorage.getItem(itemName));
+      LOG(`Get bug categories from session storage`);
+    } else {
+      CATEGORIES = await fecthAndParse("../resources/bug_categories.json");
+      sessionStorage.setItem(itemName, JSON.stringify(CATEGORIES));
+      LOG(`Get bug categories from fetch`);
+    }
+  }
+  return CATEGORIES;
+}
+
+async function getCategoryForBug(bug) {
+  const categories = await getTriagingCategories();
+  for (let category of categories) {
     if (isBugBelongToCategory(bug, category)) {
       return category.name;
     }
   }
   LOGV(`'${bug.summary}' doesn't find any match`);
-  return CATERGORIES[CATERGORIES.length - 1].name;
+  return categories[categories.length - 1].name;
 }
 
-export function getCategoriesDistributionFromBugList(buglist) {
+export async function getCategoriesDistributionFromBugList(buglist) {
   let map = new Map();
-  buglist.forEach(bug => {
-    const category = getCategoryForBug(bug);
+  for (let bug of buglist) {
+    let category = await getCategoryForBug(bug);
     if (map.has(category)) {
       map.set(category, map.get(category) + 1);
     } else {
       map.set(category, 1);
     }
-  });
+  };
   // return map in descending order in value (bug amount)
   return new Map([...map.entries()].sort((a, b) => b[1] - a[1]));
 }

@@ -89,7 +89,7 @@ export async function getPieChartForFixedBugsFromVersion(version) {
 
 async function createPieChart(canvas, version) {
   let buglist = await Bugzilla.generateFixedBugListForVersion(version);
-  let data = Bugzilla.getCategoriesDistributionFromBugList(buglist);
+  let data = await Bugzilla.getCategoriesDistributionFromBugList(buglist);
 
   // convert map to arrays
   let categories = Array.from(data.keys());
