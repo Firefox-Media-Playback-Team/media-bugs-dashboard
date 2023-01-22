@@ -1,3 +1,7 @@
+import * as Bugzilla from "./bugzilla.js";
+
+var COLOR_ARRAY = [];
+
 function getCanvasForVersion(version) {
   let canvas = document.createElement('canvas');
   canvas.id = `chart_${version}`;
@@ -17,7 +21,7 @@ function createRootElementFrom(query, rootClassName) {
 /**
  * Priority Section
  */
- async function createPrioritySection() {
+ export async function createPrioritySection() {
   let title = document.createElement('h2');
   title.innerHTML = `Open Bugs Overview`;
   document.querySelector(".priority-overview>.title").appendChild(title);
@@ -31,23 +35,23 @@ function createRootElementFrom(query, rootClassName) {
 async function createProrityBugReportSection(priority) {
   // Display total bug amount
   let bugAmount = document.createElement('a');
-  bugAmount.innerHTML = await getBugCountForPriority(priority);
-  bugAmount.href = getBugListLinkForPriority(priority);
+  bugAmount.innerHTML = await Bugzilla.getBugCountForPriority(priority);
+  bugAmount.href = Bugzilla.getBugListLinkForPriority(priority);
   document.getElementById(`${priority}-total`).appendChild(bugAmount);
 
   // Display recent bugs
-  let url = getBugzillaRestfulUrl({
-    request : PRIORITY_BUGS_REQUEST,
+  let url = Bugzilla.getBugzillaRestfulUrl({
+    request : Bugzilla.PRIORITY_BUGS_REQUEST,
     target : "${PRIORITY}",
     replace : priority,
     count_only: true,
     update_within_months: 1,
   });
-  let rv = await fecthAndParse(url);
+  let rv = await Bugzilla.fecthAndParse(url);
   let recentBugs = document.createElement('a');
   recentBugs.innerHTML = rv.bug_count;
-  recentBugs.href = getBugzillaListUrl({
-    request : PRIORITY_BUGS_REQUEST,
+  recentBugs.href = Bugzilla.getBugzillaListUrl({
+    request : Bugzilla.PRIORITY_BUGS_REQUEST,
     target : "${PRIORITY}",
     replace : priority,
     update_within_months: 1,
@@ -58,7 +62,7 @@ async function createProrityBugReportSection(priority) {
 /**
  * Version Section
  */
-async function getPieChartForFixedBugsFromVersion(version) {
+export async function getPieChartForFixedBugsFromVersion(version) {
   const root = createRootElementFrom(
       ".chart-data > .horizontal-scroll-bar", "fixed-bug-list");
 
@@ -72,7 +76,7 @@ async function getPieChartForFixedBugsFromVersion(version) {
   let desDiv = document.createElement("div");
   let buglistLink = document.createElement("a");
   buglistLink.innerHTML = "buglist";
-  buglistLink.href = getBugListLinkForVersion(version);
+  buglistLink.href = Bugzilla.getBugListLinkForVersion(version);
   desDiv.appendChild(buglistLink);
   desDiv.className = "description"
   root.appendChild(desDiv);
@@ -84,8 +88,8 @@ async function getPieChartForFixedBugsFromVersion(version) {
 }
 
 async function createPieChart(canvas, version) {
-  let buglist = await generateFixedBugListForVersion(version);
-  let data = getCategoriesDistributionFromBugList(buglist);
+  let buglist = await Bugzilla.generateFixedBugListForVersion(version);
+  let data = Bugzilla.getCategoriesDistributionFromBugList(buglist);
 
   // convert map to arrays
   let categories = Array.from(data.keys());
@@ -96,17 +100,17 @@ async function createPieChart(canvas, version) {
   }
 
   function getColorArray(labelNums) {
-    if (this.arr == undefined) {
-      this.arr = [];
+    if (COLOR_ARRAY == undefined) {
+      COLOR_ARRAY = [];
     }
-    if (this.arr.length >= labelNums) {
-      return arr;
+    if (COLOR_ARRAY.length >= labelNums) {
+      return COLOR_ARRAY;
     }
-    let currentSz = this.arr.length;
+    let currentSz = COLOR_ARRAY.length;
     for (let idx = 0; idx < labelNums - currentSz; idx++) {
-      this.arr.push("#" + Math.floor(Math.random()*16777215).toString(16));
+      COLOR_ARRAY.push("#" + Math.floor(Math.random()*16777215).toString(16));
     }
-    return arr;
+    return COLOR_ARRAY;
   }
 
   new Chart(canvas, {
@@ -131,3 +135,5 @@ async function createPieChart(canvas, version) {
     }
   });
 }
+
+export * from "./visualization.js";

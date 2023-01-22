@@ -1,7 +1,7 @@
 const BUGZILLA_REST_URL = "https://bugzilla.mozilla.org/rest/bug";
 const BUGZILLA_BUGLIST_URL = "https://bugzilla.mozilla.org/buglist.cgi";
 const FIXED_BUGS_REQUEST = "?v2=verified&o1=equals&query_format=advanced&f1=cf_status_firefox${VERSION}&component=Audio%2FVideo&component=Audio%2FVideo%3A%20cubeb&component=Audio%2FVideo%3A%20GMP&component=Audio%2FVideo%3A%20Playback&resolution=FIXED&j_top=OR&f2=cf_status_firefox${VERSION}&v1=fixed&o2=equals&product=Core"
-const PRIORITY_BUGS_REQUEST = "?resolution=---&component=Audio%2FVideo&component=Audio%2FVideo%3A%20cubeb&component=Audio%2FVideo%3A%20GMP&component=Audio%2FVideo%3A%20Playback&priority=${PRIORITY}";
+export const PRIORITY_BUGS_REQUEST = "?resolution=---&component=Audio%2FVideo&component=Audio%2FVideo%3A%20cubeb&component=Audio%2FVideo%3A%20GMP&component=Audio%2FVideo%3A%20Playback&priority=${PRIORITY}";
 
 var DEBUG = true;
 var VERVOSE = false;
@@ -42,11 +42,11 @@ const CATERGORIES = [
   { name : "Others"},
 ];
 
-function getBugListLinkForVersion(version) {
+export function getBugListLinkForVersion(version) {
   return BUGZILLA_BUGLIST_URL + FIXED_BUGS_REQUEST.replaceAll("${VERSION}", version);
 }
 
-function getBugListLinkForPriority(priority) {
+export function getBugListLinkForPriority(priority) {
   return BUGZILLA_BUGLIST_URL + PRIORITY_BUGS_REQUEST.replaceAll("${PRIORITY}", priority);
 }
 
@@ -60,7 +60,7 @@ function getBugListRestfulForPriority(priority, countOnly = false) {
         (countOnly ? "&count_only=1":"");
 }
 
-function getBugzillaRestfulUrl({request, target, replace, count_only, update_within_months}) {
+export function getBugzillaRestfulUrl({request, target, replace, count_only, update_within_months}) {
   let url = BUGZILLA_REST_URL + request.replaceAll(`${target}`, `${replace}`);
 
   if (count_only) {
@@ -75,7 +75,7 @@ function getBugzillaRestfulUrl({request, target, replace, count_only, update_wit
   return url;
 }
 
-function getBugzillaListUrl({request, target, replace, update_within_months}) {
+export function getBugzillaListUrl({request, target, replace, update_within_months}) {
   let url = BUGZILLA_BUGLIST_URL + request.replaceAll(`${target}`, `${replace}`);
   if (update_within_months) {
     let date = new Date();
@@ -91,7 +91,7 @@ function getBugzillaListUrl({request, target, replace, update_within_months}) {
 /**
  * For version
  */
-async function generateFixedBugListForVersion(version) {
+export async function generateFixedBugListForVersion(version) {
   // TODO : verify version
   let buglist;
   if (sessionStorage.getItem(version)) {
@@ -127,7 +127,7 @@ async function generateFixedBugListForVersion(version) {
   return buglist;
 }
 
-async function getBugCountForPriority(priority) {
+export async function getBugCountForPriority(priority) {
   // TODO : verify priority
   const response = await fetch(
       getBugListRestfulForPriority(priority, true /* countOnly */));
@@ -135,7 +135,7 @@ async function getBugCountForPriority(priority) {
   return rv.bug_count;
 }
 
-async function fecthAndParse(url) {
+export async function fecthAndParse(url) {
   const response = await fetch(url, { mode: 'cors'});
   let rv = await response.json();
   return rv;
@@ -189,7 +189,7 @@ function getCategoryForBug(bug) {
   return CATERGORIES[CATERGORIES.length - 1].name;
 }
 
-function getCategoriesDistributionFromBugList(buglist) {
+export function getCategoriesDistributionFromBugList(buglist) {
   let map = new Map();
   buglist.forEach(bug => {
     const category = getCategoryForBug(bug);
