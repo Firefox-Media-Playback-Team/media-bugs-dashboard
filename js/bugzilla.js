@@ -163,7 +163,7 @@ async function getTriagingCategories() {
       CATEGORIES = JSON.parse(sessionStorage.getItem(itemName));
       LOG(`Get bug categories from session storage`);
     } else {
-      CATEGORIES = await fecthAndParse("../resources/bug_categories.json");
+      CATEGORIES = await fecthAndParse("./resources/bug_categories.json");
       sessionStorage.setItem(itemName, JSON.stringify(CATEGORIES));
       LOG(`Get bug categories from fetch`);
     }
